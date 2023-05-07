@@ -1,0 +1,11 @@
+.image-formatting {
+    border: 3px solid rgb(104, 104, 252);
+    margin: 10px;
+    padding: 50px;
+    text-align: center;
+}
+
+.image-formatting img {
+    height: 250px;
+    width: 250px;
+}
