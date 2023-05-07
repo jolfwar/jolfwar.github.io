@@ -6,6 +6,16 @@
 }
 
 .image-formatting img {
-    height: 250px;
-    width: 250px;
+    height: 25%;
+    width: 25%;
+}
+
+.image-formatting-select {
+    padding: 50px;
+    text-align: center;
+}
+
+.image-formatting-select img {
+    height: 75%;
+    width: 75%;
 }
