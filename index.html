@@ -14,7 +14,21 @@
         <img src="images/DJI_0149.JPG">
         <br>
         <a href="pages/sylvian_lake_02.html"><img src="images/DJI_0152.JPG"></a>
-        <img src="images/DJI_0154.JPG">
+        <img src="images/DJI_0154.JPG" onclick="playSound('images/unknown_sound.mp3')" />
+
+            <audio id="audio">
+                <source src="images/unknown_sound.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+
+            <script>
+                function playSound(sound) {
+                    var audio = document.getElementById("audio");
+                    audio.src = sound;
+                    audio.play();
+                }
+            </script>
+
         <img src="images/DJI_0155.JPG">
         <br>
         <img src="images/DJI_0173.JPG">
