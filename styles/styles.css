@@ -82,8 +82,9 @@ body {
 
 /* Individual links */
 .nav-links a {
+    display: inline-block;   /* change to: block */
     text-decoration: none;
-    color: #060c18;
+    color: #e5e7eb;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-size: 0.95rem;
     letter-spacing: 0.03em;
@@ -91,6 +92,7 @@ body {
     padding: 0.25rem 0;
     transition: color 0.2s ease;
 }
+
 
 /* Underline hover effect */
 .nav-links a::after {
@@ -137,4 +139,57 @@ body {
         justify-content: center;
         gap: 1rem;
     }
+}
+
+/* Parent item needs positioning context */
+.nav-item.dropdown {
+    position: relative;
+}
+
+/* Dropdown menu base */
+.dropdown-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0.5rem 0;
+    position: absolute;
+    top: 100%;              /* just below Trips */
+    left: 0;
+    min-width: 180px;
+    background-color: #0f172a;
+    border-radius: 0.25rem;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.4);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(6px);
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
+    z-index: 200;
+}
+
+/* Dropdown items */
+.dropdown-menu li {
+    width: 100%;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 0.4rem 0.9rem;
+    color: #e5e7eb;
+    text-decoration: none;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+/* Hover states for dropdown links */
+.dropdown-menu a:hover,
+.dropdown-menu a:focus {
+    background-color: #1e293b;
+    color: #ffffff;
+}
+
+/* Show dropdown on hover of Trips */
+.nav-item.dropdown:hover > .dropdown-menu,
+.nav-item.dropdown:focus-within > .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
 }
