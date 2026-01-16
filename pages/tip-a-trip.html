@@ -3,9 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tip a Trip</title>
+    <title>Tip a Trip - Suggest Your Dream Trip</title>
+    <link rel="stylesheet" type="text/css" href="../styles/styles.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 30px;
+        }
+        form {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        fieldset {
+            border: none;
+            margin-bottom: 25px;
+            padding: 0;
+        }
+        legend {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #495057;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+            margin-bottom: 15px;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+        .checkbox-group, .radio-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .checkbox-group label, .radio-group label {
+            display: flex;
+            align-items: center;
+            margin: 0 10px 10px 0;
+            font-weight: normal;
+        }
+        input[type="checkbox"], input[type="radio"] {
+            width: auto;
+            margin-right: 8px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            form { padding: 20px; }
+        }
+    </style>
 </head>
-<body>
-    <h1> TIP A TRIP </h1>
+<body class="body-container">
+    <header>
+        <nav class="main-nav">
+            <ul class="nav-links">
+                <li><a href="../index.html" class="logo"><img src="../images/airplane2.png" alt="Travel Home" style="width:20px; height:20px"></a></li>
+                
+                <li class="nav-item dropdown">
+                    <a href="trips.html">Trips</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="trip1.html">Badlands</a></li>
+                        <li><a href="trip2.html">Sylvan Lake</a></li>
+                        <li><a href="trip3.html">Blue Ridge Mountains</a></li>
+                        <li><a href="trip4.html">Minnesota</a></li>
+                        <li><a href="trip5.html">Oregon</a></li>
+                    </ul>
+                <li><a href="tip-a-trip.html">Tip a Trip</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <h1>TIP A TRIP</h1>
+    <form id="tripTipForm" novalidate>
+        <fieldset>
+            <legend>Basic Information</legend>
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Email Address:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" name="phone">
+
+            <label for="travelers">Who is going? (Number of travelers):</label>
+            <input type="number" id="travelers" name="travelers" min="1" max="20" required>
+
+            <label for="departureCity">Departure City / Home Airport:</label>
+            <input type="text" id="departureCity" name="departureCity" required>
+        </fieldset>
+
+        <fieldset>
+            <legend>Timing and Duration</legend>
+            <label for="departureDate">Preferred Departure Date:</label>
+            <input type="date" id="departureDate" name="departureDate" required>
+
+            <label>Date Flexibility:</label>
+            <div class="radio-group">
+                <label><input type="radio" name="flexibility" value="exact" required> Exact dates</label>
+                <label><input type="radio" name="flexibility" value="plusminus"> ±3 days</label>
+                <label><input type="radio" name="flexibility" value="flexible"> Flexible within month</label>
+            </div>
+
+            <label for="duration">Trip Length (nights):</label>
+            <input type="number" id="duration" name="duration" min="1" max="365" required>
+        </fieldset>
+
+        <fieldset>
+            <legend>Destination and Trip Type</legend>
+            <label for="destination">Destination Idea:</label>
+            <input type="text" id="destination" name="destination" placeholder="e.g., Paris, beach in Mexico, or open to suggestions">
+
+            <label>Trip Types (select all that apply):</label>
+            <div class="checkbox-group">
+                <label><input type="checkbox" name="type[]" value="beach"> Beach</label>
+                <label><input type="checkbox" name="type[]" value="city"> City break</label>
+                <label><input type="checkbox" name="type[]" value="nature"> Nature/Adventure</label>
+                <label><input type="checkbox" name="type[]" value="cruise"> Cruise</label>
+                <label><input type="checkbox" name="type[]" value="themepark"> Theme Park</label>
+                <label><input type="checkbox" name="type[]" value="roadtrip"> Road Trip</label>
+            </div>
+
+            <label for="activities">Must-see Activities:</label>
+            <textarea id="activities" name="activities" rows="3" placeholder="Food tours, hiking, museums, etc."></textarea>
+        </fieldset>
+
+        <fieldset>
+            <legend>Budget and Logistics</legend>
+            <label for="budget">Total Budget (USD):</label>
+            <input type="number" id="budget" name="budget" min="0" step="100" required>
+
+            <label>Accommodation Style (select all):</label>
+            <div class="checkbox-group">
+                <label><input type="checkbox" name="accommodation[]" value="hotel"> Hotel</label>
+                <label><input type="checkbox" name="accommodation[]" value="resort"> Resort</label>
+                <label><input type="checkbox" name="accommodation[]" value="airbnb"> Airbnb</label>
+                <label><input type="checkbox" name="accommodation[]" value="luxury"> Luxury</label>
+            </div>
+
+            <label for="notes">Additional Notes (dietary needs, past trips, vibe):</label>
+            <textarea id="notes" name="notes" rows="4"></textarea>
+        </fieldset>
+
+        <button type="submit">Submit Trip Tip!</button>
+    </form>
+
+    <script>
+        document.getElementById('tripTipForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thanks for your trip tip! This would send data to your server or service like Formspree/Netlify Forms.');
+            // In production, use FormData to POST to backend
+        });
+    </script>
 </body>
 </html>
