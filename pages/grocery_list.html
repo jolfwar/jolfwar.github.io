@@ -3,403 +3,264 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grocery List</title>
-    <link rel="stylesheet" href="../styles/styles.css">
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grocery List</title>
+    <title>Grocery List Manager</title>
     <style>
-        #grocery-container {
-            max-width: 600px;
-            margin: 20px auto;
-            font-family: Arial, sans-serif;
+        /* General Styles */
+        #grocery-container { max-width: 600px; margin: 20px auto; font-family: Arial, sans-serif; }
+        .tabs { border-bottom: 2px solid #ccc; margin-bottom: 15px; }
+        .tab-link { background: none; border: none; padding: 10px 20px; cursor: pointer; font-size: 16px; transition: 0.3s; }
+        .tab-link.active { border-bottom: 3px solid #007bff; color: #007bff; font-weight: bold; }
+        .tab-content { display: none; padding: 20px 0; }
+        .tab-content.active { display: block; }
+
+        /* Grocery Item Styles */
+        #grocery-list { list-style: none; padding: 0; margin: 20px 0; }
+        .grocery-item { 
+            background: #f9f9f9; margin: 10px 0; padding: 15px; 
+            border-radius: 4px; border-left: 4px solid #4CAF50; 
+            display: flex; justify-content: space-between; align-items: center; 
         }
-        #add-item-btn {
-            background: #4CAF50;
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        #add-item-btn:hover {
-            background: #45a049;
-        }
-        #grocery-list {
-            list-style: none;
-            padding: 0;
-            margin: 20px 0 0 0;
-        }
-        .grocery-item {
-            background: #f9f9f9;
-            margin: 10px 0;
-            padding: 15px;
-            border-radius: 4px;
-            border-left: 4px solid #4CAF50;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .item-details {
-            flex-grow: 1;
-        }
-        .item-actions button {
-            margin-left: 8px;
-            padding: 6px 12px;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .edit-btn {
-            background: #2196F3;
-            color: white;
-        }
-        .edit-btn:hover {
-            background: #1976D2;
-        }
-        .delete-btn {
-            background: #f44336;
-            color: white;
-        }
-        .delete-btn:hover {
-            background: #d32f2f;
-        }
-        #departments-editor {
-            margin-top: 20px;
-            padding: 15px;
-            background: #e8f5e8;
-            border-radius: 4px;
-        }
-        #departments-editor input {
-            margin-right: 10px;
-            padding: 6px;
-        }
-        #dept-add-btn, #dept-remove-btn {
-            background: #FF9800;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 3px;
-            cursor: pointer;
-        }
-        #dept-add-btn:hover, #dept-remove-btn:hover {
-            background: #F57C00;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-        }
-        .modal-content {
-            background-color: white;
-            margin: 10% auto;
-            padding: 20px;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 400px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        .modal-buttons {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-        }
-        .btn-primary {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+
+        /* Form/Modal Styles */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
+        .modal-content { background-color: white; margin: 10% auto; padding: 20px; border-radius: 8px; width: 90%; max-width: 400px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input, .form-group select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+
+        /* Button Styles */
+        #add-item-btn, .btn-primary { background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        .delete-btn { background: #f44336; color: white; border: none; padding: 6px 12px; border-radius: 3px; cursor: pointer; }
+        #dept-add-btn, #dept-remove-btn { background: #FF9800; color: white; border: none; padding: 6px 12px; border-radius: 3px; cursor: pointer; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <header>
-        <!-- Navigation Menu -->
-        <nav class="main-nav">
-            <ul class="nav-links">
-                <li><a href="../index.html" class="logo"><img src="../images/airplane2.png" alt="Travel Home" style="width:20px; height:20px"></a></li>
-                
-                <li class="nav-item dropdown">
-                    <a href="trips.html">Trips</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="trip1.html">Badlands</a></li>
-                        <li><a href="trip2.html">Sylvan Lake</a></li>
-                        <li><a href="trip3.html">Blue Ridge Mountains</a></li>
-                        <li><a href="trip4.html">Minnesota</a></li>
-                        <li><a href="trip5.html">Oregon</a></li>
-                    </ul>
 
-                 <li class="nav-item dropdown">
-                    <a href="pages/miscellaneous.html">Miscellaneous</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="pages/grocery_list.html">Grocery List</a></li>
-                    </ul>
-                    
-                <li><a href="tip-a-trip.html">Tip a Trip</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
+<header>
+    <nav class="main-nav">
         </nav>
-    </header>
+</header>
 
-    <div id="grocery-container">
-        <h2>Grocery List Manager</h2>
+<div id="grocery-container">
+    <h2>Grocery List Manager</h2>
+
+    <div class="tabs">
+        <button class="tab-link active" onclick="openTab(event, 'list-view')">Items</button>
+        <button class="tab-link" onclick="openTab(event, 'dept-view')">Departments</button>
+    </div>
+
+    <div id="list-view" class="tab-content active">
         <button id="add-item-btn">Add Grocery Item</button>
         <ul id="grocery-list"></ul>
-        
+    </div>
+
+    <div id="dept-view" class="tab-content">
         <div id="departments-editor">
             <h3>Manage Departments</h3>
-            <input type="text" id="new-dept-input" placeholder="New department name">
-            <button id="dept-add-btn">Add Dept</button>
-            <select id="dept-remove-select">
-                <option value="">Select to remove</option>
-            </select>
-            <button id="dept-remove-btn">Remove Dept</button>
+            <div class="form-group">
+                <input type="text" id="new-dept-input" placeholder="New department name">
+                <button id="dept-add-btn">Add Dept</button>
+            </div>
+            <hr>
+            <div class="form-group">
+                <select id="dept-remove-select">
+                    <option value="">Select to remove</option>
+                </select>
+                <button id="dept-remove-btn">Remove Dept</button>
+            </div>
         </div>
     </div>
+</div>
 
-    <!-- Add/Edit Modal -->
-    <div id="item-modal" class="modal">
-        <div class="modal-content">
-            <h3 id="modal-title">Add Grocery Item</h3>
-            <form id="item-form">
-                <div class="form-group">
-                    <label for="item-name">Item Name:</label>
-                    <input type="text" id="item-name" required>
-                </div>
-                <div class="form-group">
-                    <label for="item-cost">Cost ($):</label>
-                    <input type="number" id="item-cost" step="0.01" min="0" required>
-                </div>
-                <div class="form-group">
-                    <label for="item-amount">Amount:</label>
-                    <input type="number" id="item-amount" min="0" required>
-                </div>
-                <div class="form-group">
-                    <label for="item-dept">Department:</label>
-                    <select id="item-dept" required></select>
-                </div>
-                <div class="modal-buttons">
-                    <button type="button" class="btn-secondary" id="modal-cancel">Cancel</button>
-                    <button type="submit" class="btn-primary">Save</button>
-                </div>
-            </form>
-        </div>
+<div id="item-modal" class="modal">
+    <div class="modal-content">
+        <h3 id="modal-title">Add Grocery Item</h3>
+        <form id="item-form">
+            <div class="form-group">
+                <label for="item-name">Item Name:</label>
+                <input type="text" id="item-name" required>
+            </div>
+            <div class="form-group">
+                <label for="item-cost">Cost ($):</label>
+                <input type="number" id="item-cost" step="0.01" min="0" required>
+            </div>
+            <div class="form-group">
+                <label for="item-amount">Amount:</label>
+                <input type="number" id="item-amount" min="0" required>
+            </div>
+            <div class="form-group">
+                <label for="item-dept">Department:</label>
+                <select id="item-dept" required></select>
+            </div>
+            <div class="modal-buttons" style="display:flex; justify-content:flex-end; gap:10px;">
+                <button type="button" class="btn-secondary" id="modal-cancel">Cancel</button>
+                <button type="submit" class="btn-primary">Save</button>
+            </div>
+        </form>
     </div>
+</div>
 
-    <script>
+<script>
+    /** * 1. CONFIGURATION & INITIALIZATION
+     */
+    const _supabaseUrl = 'https://cayqwpfqylszrcrsqclf.supabase.co';
+    const _supabaseKey = 'sb_publishable_8ccwqcYAFMeZtpVwuHJdCA_UdDzOMyA'; 
+    const supabaseClient = supabase.createClient(_supabaseUrl, _supabaseKey);
 
-// ADD NEW DEPARTMENT
-document.getElementById('dept-add-btn').addEventListener('click', async () => {
-    const newDeptInput = document.getElementById('new-dept-input');
-    const newDeptName = newDeptInput.value.trim();
+    // Global State
+    let departments = [];
 
-    if (!newDeptName) {
-        alert("Please enter a department name.");
-        return;
-    }
-
-    // Insert the new department into Supabase
-    const { data, error } = await supabaseClient
-        .from('departments')
-        .insert([{ name: newDeptName }])
-        .select(); // Returns the new record
-
-    if (error) {
-        console.error('Error adding department:', error);
-        alert("Could not add department. Check your RLS policies.");
-    } else {
-        // Clear input and refresh the dropdowns and state
-        newDeptInput.value = '';
-        await fetchDepartments(); // This updates the global 'departments' list and dropdowns
-        alert(`Added ${newDeptName}!`);
-    }
-});
-
-       // 1. DATABASE CONFIGURATION
-const _supabaseUrl = 'https://cayqwpfqylszrcrsqclf.supabase.co';
-const _supabaseKey = 'sb_publishable_8ccwqcYAFMeZtpVwuHJdCA_UdDzOMyA'; // Keep this safe!
-const supabaseClient = supabase.createClient(_supabaseUrl, _supabaseKey);
-
-// Define DOM elements
-const modal = document.getElementById('item-modal');
-const form = document.getElementById('item-form');
-const deptSelect = document.getElementById('item-dept');
-
-let departments = [];
-
-// 2. FETCH DEPARTMENTS
-async function fetchDepartments() {
-    const { data, error } = await supabaseClient.from('departments').select('*');
-    if (error) {
-        console.error('Error fetching departments:', error);
-    } else {
-        departments = data;
-        updateDeptDropdowns();
-    }
-}
-
-// 3. RENDER LIST
-async function renderList() {
-    const { data, error } = await supabaseClient
-        .from('grocery_items')
-        .select(`
-            id, name, cost, amount,
-            departments ( name )
-        `);
-
-    if (error) {
-        console.error('Error fetching groceries:', error);
-        return;
-    }
-
-    const list = document.getElementById('grocery-list');
-    list.innerHTML = '';
-    
-    data.forEach((item) => {
-        const li = document.createElement('li');
-        li.className = 'grocery-item';
-        // Check if departments object exists (handles items with no dept assigned)
-        const deptName = item.departments ? item.departments.name : 'Uncategorized';
-        
-        li.innerHTML = `
-            <div class="item-details">
-                <strong>${item.name}</strong> - ${item.amount} @ $${item.cost} - 
-                <em>${deptName}</em>
-                <div>Total: $${(item.amount * item.cost).toFixed(2)}</div>
-            </div>
-            <div class="item-actions">
-                <button class="delete-btn" onclick="deleteItem('${item.id}')">Delete</button>
-            </div>
-        `;
-        list.appendChild(li);
-    });
-}
-
-// 4. ADD NEW ITEM
-form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const newItem = {
-        name: document.getElementById('item-name').value,
-        cost: parseFloat(document.getElementById('item-cost').value),
-        amount: parseFloat(document.getElementById('item-amount').value),
-        dept_id: deptSelect.value 
-    };
-
-    const { error } = await supabaseClient.from('grocery_items').insert([newItem]);
-    if (error) {
-        alert("Error adding item. Check your RLS policies!");
-    } else {
-        modal.style.display = 'none';
-        form.reset(); // Clear the form
-        renderList();
-    }
-});
-
-// 5. DELETE ITEM
-window.deleteItem = async (id) => {
-    if (confirm('Delete this item?')) {
-        const { error } = await supabaseClient.from('grocery_items').delete().eq('id', id);
-        if (error) console.error(error);
-        renderList();
-    }
-};
-
-function updateDeptDropdowns() {
-    deptSelect.innerHTML = '<option value="">Select Department</option>';
-    departments.forEach(dept => {
-        const option = document.createElement('option');
-        option.value = dept.id; 
-        option.textContent = dept.name;
-        deptSelect.appendChild(option);
-    });
-}
-
-function updateDeptDropdowns() {
-    // 1. Update the Add/Edit Item Modal dropdown
+    // DOM Selectors
+    const modal = document.getElementById('item-modal');
+    const itemForm = document.getElementById('item-form');
     const deptSelect = document.getElementById('item-dept');
-    deptSelect.innerHTML = '<option value="">Select Department</option>';
-    
-    // 2. Update the "Select to remove" dropdown in the Manager section
     const removeDeptSelect = document.getElementById('dept-remove-select');
-    removeDeptSelect.innerHTML = '<option value="">Select to remove</option>';
 
-    departments.forEach(dept => {
-        const option = document.createElement('option');
-        option.value = dept.id; 
-        option.textContent = dept.name;
-        
-        // Add the option to both dropdowns
-        deptSelect.appendChild(option.cloneNode(true));
-        removeDeptSelect.appendChild(option);
-    });
-}
-
-// DELETE DEPARTMENT LOGIC
-document.getElementById('dept-remove-btn').addEventListener('click', async () => {
-    const removeSelect = document.getElementById('dept-remove-select');
-    const deptId = removeSelect.value;
-    const deptName = removeSelect.options[removeSelect.selectedIndex].text;
-
-    if (!deptId) {
-        alert("Please select a department to remove.");
-        return;
-    }
-
-    if (confirm(`Are you sure you want to remove the "${deptName}" department?`)) {
-        const { error } = await supabaseClient
-            .from('departments')
-            .delete()
-            .eq('id', deptId);
-
+    /**
+     * 2. DATA FETCHING (API CALLS)
+     */
+    async function fetchDepartments() {
+        const { data, error } = await supabaseClient.from('departments').select('*');
         if (error) {
-            // This usually happens if groceries are still linked to this department
-            alert("Could not remove department. It may be in use by grocery items.");
-            console.error(error);
+            console.error('Error fetching departments:', error);
         } else {
-            await fetchDepartments(); // Refresh both dropdowns
-            alert(`Removed ${deptName}`);
+            departments = data;
+            updateDeptDropdowns();
         }
     }
-});
 
-// Start the app
-fetchDepartments();
-renderList();
+    async function renderList() {
+        const { data, error } = await supabaseClient
+            .from('grocery_items')
+            .select(`id, name, cost, amount, departments ( name )`);
+
+        if (error) {
+            console.error('Error fetching groceries:', error);
+            return;
+        }
+
+        const listContainer = document.getElementById('grocery-list');
+        listContainer.innerHTML = '';
+        
+        data.forEach((item) => {
+            const deptName = item.departments ? item.departments.name : 'Uncategorized';
+            const li = document.createElement('li');
+            li.className = 'grocery-item';
+            li.innerHTML = `
+                <div class="item-details">
+                    <strong>${item.name}</strong> - ${item.amount} @ $${item.cost} - 
+                    <em>${deptName}</em>
+                    <div>Total: $${(item.amount * item.cost).toFixed(2)}</div>
+                </div>
+                <div class="item-actions">
+                    <button class="delete-btn" onclick="deleteItem('${item.id}')">Delete</button>
+                </div>
+            `;
+            listContainer.appendChild(li);
+        });
+    }
+
+    /**
+     * 3. UI UPDATES
+     */
+    function updateDeptDropdowns() {
+        const placeholder = '<option value="">Select Department</option>';
+        deptSelect.innerHTML = placeholder;
+        removeDeptSelect.innerHTML = '<option value="">Select to remove</option>';
+
+        departments.forEach(dept => {
+            const option = document.createElement('option');
+            option.value = dept.id; 
+            option.textContent = dept.name;
+            
+            deptSelect.appendChild(option.cloneNode(true));
+            removeDeptSelect.appendChild(option);
+        });
+    }
+
+    /**
+     * 4. EVENT HANDLERS
+     */
+
+    // Add Grocery Item
+    itemForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const newItem = {
+            name: document.getElementById('item-name').value,
+            cost: parseFloat(document.getElementById('item-cost').value),
+            amount: parseFloat(document.getElementById('item-amount').value),
+            dept_id: deptSelect.value 
+        };
+
+        const { error } = await supabaseClient.from('grocery_items').insert([newItem]);
+        if (error) {
+            alert("Error adding item.");
+        } else {
+            modal.style.display = 'none';
+            itemForm.reset();
+            renderList();
+        }
+    });
+
+    // Delete Grocery Item
+    window.deleteItem = async (id) => {
+        if (confirm('Delete this item?')) {
+            const { error } = await supabaseClient.from('grocery_items').delete().eq('id', id);
+            if (error) console.error(error);
+            renderList();
+        }
+    };
+
+    // Add Department
+    document.getElementById('dept-add-btn').addEventListener('click', async () => {
+        const input = document.getElementById('new-dept-input');
+        const name = input.value.trim();
+        if (!name) return alert("Enter a name.");
+
+        const { error } = await supabaseClient.from('departments').insert([{ name }]);
+        if (error) {
+            alert("Error adding department.");
+        } else {
+            input.value = '';
+            await fetchDepartments();
+        }
+    });
+
+    // Remove Department
+    document.getElementById('dept-remove-btn').addEventListener('click', async () => {
+        const deptId = removeDeptSelect.value;
+        if (!deptId) return alert("Select a department.");
+
+        if (confirm(`Remove this department?`)) {
+            const { error } = await supabaseClient.from('departments').delete().eq('id', deptId);
+            if (error) {
+                alert("Could not remove. Likely still linked to items.");
+            } else {
+                await fetchDepartments();
+            }
+        }
+    });
+
+    // Tab Logic
+    function openTab(evt, tabName) {
+        document.querySelectorAll('.tab-content').forEach(t => t.style.display = "none");
+        document.querySelectorAll('.tab-link').forEach(l => l.classList.remove("active"));
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.classList.add("active");
+    }
+
+    // Modal Visibility
+    document.getElementById('add-item-btn').addEventListener('click', () => modal.style.display = 'block');
+    document.getElementById('modal-cancel').addEventListener('click', () => { modal.style.display = 'none'; itemForm.reset(); });
+    window.addEventListener('click', (e) => { if (e.target == modal) modal.style.display = 'none'; });
+
+    /**
+     * 5. APP START
+     */
+    fetchDepartments();
+    renderList();
 </script>
+
 </body>
 </html>
