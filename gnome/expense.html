@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Repayment Roulette</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin-top: 50px;
+    }
+
+    .choice-btn {
+        padding: 15px 30px;
+        margin: 10px;
+        font-size: 18px;
+        cursor: pointer;
+        border: none;
+        border-radius: 10px;
+        background-color: #eee;
+        transition: 0.2s;
+    }
+
+    .choice-btn.active {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    #spinBtn {
+        margin-top: 30px;
+        padding: 15px 40px;
+        font-size: 20px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        background-color: #222;
+        color: white;
+    }
+
+    #resetContainer {
+        margin-top: 50px;
+    }
+
+    #resetBtn {
+        padding: 10px 25px;
+        font-size: 14px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        background-color: #aaa;
+        color: white;
+        opacity: 0.7;
+        transition: 0.2s;
+    }
+
+    #resetBtn:hover {
+        opacity: 1;
+        background-color: #888;
+    }
+
+    #result {
+        margin-top: 30px;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .win { color: green; }
+    .lose { color: crimson; }
+</style>
+</head>
+<body>
+
+<h1>🎲 Repayment Roulette 🎲</h1>
+
+<div>
+    <button class="choice-btn" onclick="selectChoice('Rickey', this)">Rickey</button>
+    <button class="choice-btn" onclick="selectChoice('Robert', this)">Robert</button>
+</div>
+
+<button id="spinBtn" onclick="gnomeRoulette()">Spin</button>
+
+<div id="result"></div>
+
+<!-- Separated reset area (harder to misclick) -->
+<div id="resetContainer">
+    <button id="resetBtn" onclick="resetGame()">Try Again</button>
+</div>
+
+<script>
+let selectedPerson = null;
+let currentAudio = null;
+
+function selectChoice(name, element) {
+    selectedPerson = name;
+
+    document.querySelectorAll('.choice-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+
+    element.classList.add('active');
+}
+
+function gnomeRoulette() {
+    if (!selectedPerson) {
+        alert("Pick Rickey or Robert first.");
+        return;
+    }
+
+    const loseSounds = ['gnomeChum.m4a', 'gnomeGnomed.m4a', 'gnomeLaugh.m4a'];
+    const roll = Math.floor(Math.random() * 25) + 1;
+
+    const resultDiv = document.getElementById("result");
+    const spinBtn = document.getElementById("spinBtn");
+
+    // Stop any previous audio before starting new one
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+    }
+
+    if (roll === 25) {
+        let amount = 0;
+        let winSound = '';
+
+        if (selectedPerson === 'Rickey') {
+            amount = 501.41;
+            winSound = '100shots.m4a';
+        } else {
+            amount = 545.55;
+            winSound = 'chromeSparks.m4a';
+        }
+
+        const formattedAmount = amount.toLocaleString('en-US', {
+            style: 'currency',
+            currency: 'USD'
+        });
+
+        resultDiv.className = 'win';
+        resultDiv.innerHTML = `💰 ${selectedPerson} wins! 💰<br>Amount owed: ${formattedAmount}`;
+
+        currentAudio = new Audio(winSound);
+        currentAudio.play();
+
+        spinBtn.disabled = true;
+        spinBtn.style.opacity = "0.5";
+
+    } else {
+        const randomAudio = loseSounds[Math.floor(Math.random() * loseSounds.length)];
+        currentAudio = new Audio(randomAudio);
+        currentAudio.play();
+
+        resultDiv.className = 'lose';
+        resultDiv.innerHTML = `💀 ${selectedPerson} got gnomed... (${roll}/25) 💀`;
+    }
+}
+
+function resetGame() {
+    // Stop audio immediately
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+    }
+
+    selectedPerson = null;
+
+    document.querySelectorAll('.choice-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+
+    document.getElementById("result").innerHTML = "";
+
+    const spinBtn = document.getElementById("spinBtn");
+    spinBtn.disabled = false;
+    spinBtn.style.opacity = "1";
+}
+</script>
+
+</body>
+</html>
